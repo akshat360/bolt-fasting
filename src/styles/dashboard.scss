@@ -1,0 +1,70 @@
+.c-dashboard {
+  //   background-color: blue;
+  padding: 0 15rem;
+
+  .card {
+    border-radius: 25px;
+    padding: 20px;
+  }
+
+  &__timer {
+    display: flex;
+    gap: 2%;
+    justify-content: space-between;
+    .c-timer {
+      background-color: #4a49be;
+      width: 40%;
+      max-width: 40%;
+      height: 200px;
+
+      &__time {
+        text-align: center;
+        color: white;
+      }
+      &__progress {
+        width: 60%;
+        margin: auto;
+      }
+      &__btns {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        justify-content: center;
+        display: flex;
+      }
+      &__btn {
+        display: none;
+        background-color: #f2b3a1;
+        border-radius: 10px;
+        border: 0;
+        padding: 2px 8px;
+        &.show {
+          display: block;
+        }
+      }
+    }
+    .c-recent-fasts {
+      height: 200px;
+      width: 60%;
+      background-color: white;
+      max-width: 60%;
+    }
+  }
+
+  .c-total-fasting {
+  }
+}
+
+//Circular
+.CircularProgressbar-path {
+  stroke: red;
+}
+.CircularProgressbar-trail {
+  stroke: gray;
+}
+.CircularProgressbar-text {
+  fill: yellow;
+}
+.CircularProgressbar-background {
+  fill: green;
+}
