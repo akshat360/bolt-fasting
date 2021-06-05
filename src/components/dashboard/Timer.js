@@ -5,6 +5,8 @@ import {
 } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import Timer from 'react-compound-timer';
+import pen from '../../assets/pencil.svg';
+import moment from 'moment';
 
 export default function TimerComp() {
   const percentage = 12;
@@ -12,6 +14,7 @@ export default function TimerComp() {
 
   const timerInside = (
     <Timer
+      formatValue={(v) => v.toString().padStart(2, '0')}
       initialTime={0}
       startImmediately={false}
       onStart={() => setShowBtn('stop')}
@@ -22,7 +25,7 @@ export default function TimerComp() {
     >
       {({ start, resume, pause, stop, reset, timerState }) => (
         <React.Fragment>
-          <div>Fasting Time</div>
+          <div className="c-timer__label">Fasting Time</div>
           <div className="c-timer__time">
             <Timer.Hours />:
             <Timer.Minutes />:
@@ -70,6 +73,12 @@ export default function TimerComp() {
 
   return (
     <div className="c-timer card">
+      <div className="c-timer__select-btn ">
+        <button>
+          16:8
+          <img src={pen} alt="pen" />
+        </button>
+      </div>
       <div className="c-timer__progress">
         <CircularProgressbarWithChildren
           value={percentage}
@@ -84,6 +93,20 @@ export default function TimerComp() {
         >
           {timerInside}
         </CircularProgressbarWithChildren>
+      </div>
+      <div className="c-timer__footer ">
+        <div>
+          <div className="c-timer__label">STARTED</div>
+          <div className="c-timer__text">
+            {moment().format('DD MMM, HH:MM A')}
+          </div>
+        </div>
+        <div>
+          <div className="c-timer__label">FAST ENDING</div>
+          <div className="c-timer__text">
+            {moment().format('DD MMM, HH:MM A')}
+          </div>
+        </div>
       </div>
     </div>
   );
