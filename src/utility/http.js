@@ -1,6 +1,5 @@
 import axios from 'axios';
-// import {  } from '../constants/projectSettings';
-const baseUrl = 'http://localhost:5000/api';
+import { BASE_URL } from '../constants/projectSettings';
 
 export const http = async ({
   method = 'get',
@@ -25,7 +24,7 @@ export const http = async ({
     const res = await axios({
       method,
       url,
-      baseURL: baseUrl,
+      baseURL: BASE_URL,
       data,
       headers: headers,
     })
