@@ -24,8 +24,9 @@ export default function Detail() {
         //calc
         let avg = 0;
         data?.data?.fasts
-          .slice(7)
+          .slice(0, 7)
           .forEach((fast) => (avg = avg + parseFloat(fast.fastingTime)));
+        console.log('avg', avg);
         setFastAvg7(avg / 7);
       }
     });
