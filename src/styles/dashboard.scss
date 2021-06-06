@@ -2,6 +2,10 @@
   //   background-color: blue;
   padding: 0 16rem;
 
+  @media screen and (max-width: 500px) {
+    padding: 1rem 2rem;
+  }
+
   .card {
     border-radius: 25px;
     padding: 15px;
@@ -10,13 +14,21 @@
 
   &__timer {
     display: flex;
+
     gap: 2%;
     justify-content: space-between;
+    @media screen and (max-width: 500px) {
+      display: block;
+    }
     .c-timer {
       background-color: #4a49be;
       width: 45%;
       // max-width: 40%;
-      // height: 200px;
+      height: 300px;
+      @media screen and (max-width: 500px) {
+        width: 100%;
+        margin-bottom: 3rem;
+      }
 
       &__select-btn {
         text-align: center;
@@ -118,7 +130,15 @@
     display: flex;
     justify-content: space-between;
     padding: 40px 30px;
+    @media screen and (max-width: 500px) {
+      display: block;
+      margin: 3rem 0;
+      text-align: center;
+    }
     &__box {
+      @media screen and (max-width: 500px) {
+        margin: 3rem;
+      }
     }
     &__label {
       font-size: 14px;
