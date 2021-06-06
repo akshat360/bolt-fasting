@@ -1,4 +1,5 @@
-import React, { PureComponent } from 'react';
+import React, { useState } from 'react';
+import moment from 'moment';
 
 import {
   BarChart,
@@ -13,44 +14,51 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-export default function RecentFasts() {
-  const data = [
-    {
-      date: 'Feb 9',
-      hour: '0',
-    },
-    {
-      date: 'Feb 10',
-      hour: 6,
-    },
-    {
-      date: 'Feb 11',
-      hour: '15',
-    },
-    {
-      date: 'Feb 12',
-      hour: 12,
-    },
-    {
-      date: 'Feb 13',
-      hour: '16',
-    },
-    {
-      date: 'Feb 16',
-      hour: '12',
-    },
-    {
-      date: 'Feb 15',
-      hour: '4',
-    },
+const groupBy = (items, key) =>
+  items.reduce(
+    (result, item) => ({
+      ...result,
+      [item[key]]: [...(result[item[key]] || []), item],
+    }),
+    {}
+  );
+
+export default function RecentFasts({ user }) {
+  const grouped = user?.fasts ? groupBy(user?.fasts, 'date') : {};
+  //
+  let data = [];
+  let todayValue;
+  Object.keys(grouped).forEach((date) => {
+    let hour = Math.max.apply(
+      Math,
+      grouped[date].map((o) => parseFloat(o.fastingTime))
+    );
+    data.push({
+      hour,
+      date: moment(date).format('MMM DD'),
+    });
+  });
+  console.log('hour', grouped, data);
+  const xDomains = [
+    moment().format('MMM DD'),
+    moment().add(1, 'day').format('MMM DD'),
+    moment().add(2, 'day').format('MMM DD'),
+    moment().add(3, 'day').format('MMM DD'),
+    moment().add(4, 'day').format('MMM DD'),
+    moment().add(5, 'day').format('MMM DD'),
+    moment().add(6, 'day').format('MMM DD'),
   ];
 
   return (
     <div className="c-recent-fasts card">
       <div className="c-recent-fasts__title">Recent fasts</div>
       <div className="c-recent-fasts__head">
-        <div className="c-recent-fasts__head-time">Average 15.6</div>
-        <div className="c-recent-fasts__head-dates">Feb 9 - Feb 15</div>
+        <div className="c-recent-fasts__head-time">
+          Average {parseFloat(data[0]?.hour.toFixed(2))}
+        </div>
+        <div className="c-recent-fasts__head-dates">
+          {xDomains[0]} - {xDomains[6]}
+        </div>
       </div>
       <ResponsiveContainer width="95%" height="80%">
         <BarChart
@@ -80,10 +88,12 @@ export default function RecentFasts() {
             fontSize={12}
             tick={{ fill: '#A3A3A3' }}
             markerWidth={0}
+            domain={xDomains}
           />
           <YAxis
             unit="h"
-            domain={[0, 16]}
+            domain={[0, 1]}
+            // domain={[0, 'auto']}
             stroke="#F0F0F0"
             fontSize={12}
             orientation={'left'}

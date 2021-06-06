@@ -1,58 +1,56 @@
 import React, { useEffect, useState } from 'react';
-import { http } from '../../utility/http';
 
-export default function Detail() {
-  const user = JSON.parse(localStorage.getItem('user'));
-  const [dataArr, setDataArr] = useState({
-    totalFasts: '0',
-    fastAvg7: '0',
-    longestFast: '0',
-    longestStreak: '0',
-    currentStreak: '0',
-  });
-  const [resUser, setResUser] = useState({});
+export default function Detail({ user }) {
   const [fastAvg7, setFastAvg7] = useState(0);
+  const [longestFast, setLongestFast] = useState(0);
+  const [longestStreak, setLongestStreak] = useState(0);
+  const [currentStreak, setCurrentStreak] = useState(0);
 
   useEffect(() => {
-    http({
-      method: 'post',
-      url: '/fasts/details',
-      data: { userId: user._id },
-    }).then(({ data }) => {
-      if (data.status) {
-        setResUser(data.data);
-        //calc
+    console.log('asdasd', user.fasts);
+    if (user) {
+      if (user?.fasts?.length > 0) {
         let avg = 0;
-        data?.data?.fasts
-          .slice(0, 7)
+        user?.fasts
+          ?.slice(0, 7)
           .forEach((fast) => (avg = avg + parseFloat(fast.fastingTime)));
+        setFastAvg7((avg / 7)?.toFixed(2));
+
+        const longestTime =
+          user?.fasts?.length > 0 &&
+          user?.fasts?.reduce((prev, curr) =>
+            parseFloat(curr.fastingTime) > parseFloat(prev.fastingTime)
+              ? curr
+              : prev
+          );
+        setLongestFast(parseFloat(longestTime?.fastingTime)?.toFixed(2));
+
         console.log('avg', avg);
-        setFastAvg7(avg / 7);
       }
-    });
-  }, []);
+    }
+  }, [user]);
 
   return (
     <div className="c-detail card">
       <div className="c-detail__box">
         <div className="c-detail__label">Total Fasts</div>
-        <div className="c-detail__value">{resUser?.fasts?.length}</div>
+        <div className="c-detail__value">{user?.fasts?.length}</div>
       </div>
       <div className="c-detail__box">
         <div className="c-detail__label">7-fast avg.</div>
-        <div className="c-detail__value">{fastAvg7.toFixed(2)}h</div>
+        <div className="c-detail__value">{fastAvg7}h</div>
       </div>
       <div className="c-detail__box">
         <div className="c-detail__label">Longest Fast</div>
-        <div className="c-detail__value">{dataArr.longestFast}h</div>
+        <div className="c-detail__value">{user?.longestFast}h</div>
       </div>
       <div className="c-detail__box">
         <div className="c-detail__label">Longest Streak</div>
-        <div className="c-detail__value">{dataArr.longestStreak}</div>
+        <div className="c-detail__value">{user?.longestStreak}</div>
       </div>
       <div className="c-detail__box">
         <div className="c-detail__label">Current Streak</div>
-        <div className="c-detail__value">{dataArr.currentStreak}</div>
+        <div className="c-detail__value">{user?.currentStreak}</div>
       </div>
     </div>
   );

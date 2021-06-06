@@ -10,7 +10,7 @@ import { http } from '../../utility/http';
 import { toast } from 'react-toastify';
 import { ClockUpDown } from './CountUp';
 
-export default function TimerComp() {
+export default function TimerComp({ setReload }) {
   // const [showBtn, setShowBtn] = useState('start');
   const [goalType, setGoalType] = useState('16:8');
   const [startedAt, setStartedAt] = useState(moment());
@@ -59,7 +59,7 @@ export default function TimerComp() {
       endingAt,
       fastingTime: '0',
       totalFastingTime: fastingHours,
-      date: startedAt.format('DD-MM-YYYY'),
+      date: startedAt.format('MM-DD-YYYY'),
       userId: user._id,
     };
 
@@ -75,6 +75,7 @@ export default function TimerComp() {
         setTimerState(data.fast.fastState);
         setStartedAt(moment(data.fast.startedAt));
         setEndingAt(moment(data.fast.endingAt));
+        setReload((s) => !s);
       } else {
         toast.error(data.message);
       }
@@ -84,6 +85,7 @@ export default function TimerComp() {
   const handleEndTimer = (fastingTime) => {
     const data = {
       fastId: fastId,
+      userId: user._id,
       fastingTime,
       // currentTime
     };
@@ -101,6 +103,7 @@ export default function TimerComp() {
         setTimerState(data.data.fastState);
         setStartedAt(moment(data.data.startedAt));
         setEndingAt(moment(data.data.endingAt));
+        setReload((s) => !s);
       } else {
         toast.error(data.message);
       }

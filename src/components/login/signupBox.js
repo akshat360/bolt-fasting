@@ -26,6 +26,7 @@ export default function SignupBox() {
       data: state,
     }).then(({ data }) => {
       if (data && data.status) {
+        localStorage.setItem('user', JSON.stringify(data.data));
         toast.success(data.message);
         history.push('/dashboard');
       } else {
