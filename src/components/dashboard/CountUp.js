@@ -25,13 +25,14 @@ export const ClockUpDown = (props) => {
     value,
     controls: { setTime, reset, getTime, start, stop },
   } = useTimer({
-    initialTime: initialTime,
+    initialTime: timerState === 'started' ? initialTime : 0,
     startImmediately: false,
   });
 
   useEffect(() => {
-    setTime(initialTime);
-    if (initialTime > 0) start();
+    timerState === 'started' ? setTime(initialTime) : setTime(0);
+    console.log('initialTime', initialTime);
+    if (timerState === 'started' && initialTime > 0) start();
   }, [initialTime]);
 
   useEffect(() => {

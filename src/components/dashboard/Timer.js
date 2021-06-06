@@ -30,7 +30,7 @@ export default function TimerComp() {
       data: { userId: user._id },
     }).then(({ data }) => {
       const currentFast = data.data;
-      if (data.status && !data.err) {
+      if (data.status && !data.err && currentFast.fastState === 'started') {
         setGoalType(currentFast.goalType);
         setStartedAt(moment(currentFast.startedAt));
         setEndingAt(moment(currentFast.endingAt));
