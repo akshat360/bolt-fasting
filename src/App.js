@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import './styles/all.scss';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-responsive-modal/styles.css';
 
 function App() {
   return (

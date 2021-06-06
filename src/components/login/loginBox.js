@@ -16,6 +16,7 @@ export default function LoginBox() {
     }).then(({ data }) => {
       if (data && data.status) {
         toast.success(data.message);
+        localStorage.setItem('user', JSON.stringify(data.data));
         history.push('/dashboard');
       } else {
         toast.error(data.message);

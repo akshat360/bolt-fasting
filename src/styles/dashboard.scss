@@ -21,16 +21,24 @@
       &__select-btn {
         text-align: center;
         padding-bottom: 10px;
-        button {
+        select {
+          width: 65px;
+          outline: none;
           background: #5d5bc4;
           border: none;
           padding: 2px 10px;
           color: white;
           border-radius: 50px;
-          img {
-            padding-left: 4px;
-            height: 10px;
-          }
+
+          //icon
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          -o-appearance: none;
+          appearance: none;
+        }
+        img {
+          height: 10px;
+          margin-left: -22px;
         }
       }
       &__label {

@@ -7,10 +7,80 @@ import 'react-circular-progressbar/dist/styles.css';
 import Timer from 'react-compound-timer';
 import pen from '../../assets/pencil.svg';
 import moment from 'moment';
+import { http } from '../../utility/http';
+import { toast } from 'react-toastify';
 
 export default function TimerComp() {
   const percentage = 12;
   const [showBtn, setShowBtn] = useState('start');
+  const [goalType, setGoalType] = useState('16:8');
+  const [startedAt, setStartedAt] = useState(moment());
+  const [endingAt, setEndingAt] = useState(moment());
+  const [timerState, setTimerState] = useState('initial');
+  const [fastId, setFastId] = useState('');
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  const handleStartTimer = () => {
+    const fastingHours = goalType.split(':')[0];
+
+    const startedAt = moment();
+    const endingAt = moment().add(fastingHours, 'hour');
+
+    const data = {
+      goalType,
+      fastState: 'started',
+      startedAt,
+      endingAt,
+      fastingTime: '0',
+      totalFastingTime: fastingHours,
+      date: startedAt.format('DD-MM-YYYY'),
+      userId: user._id,
+    };
+
+    http({
+      method: 'post',
+      url: '/fasts/create',
+      data,
+    }).then(({ data }) => {
+      if (data && data.status) {
+        toast.success(data.message);
+        setFastId(data.fast._id);
+        setTimerState(data.fast.fastState);
+        setStartedAt(moment(data.fast.startedAt));
+        setEndingAt(moment(data.fast.endingAt));
+      } else {
+        toast.error(data.message);
+      }
+    });
+  };
+
+  const handleEndTimer = () => {
+    const data = {
+      fastId: fastId,
+      // currentTime
+    };
+
+    http({
+      method: 'post',
+      url: '/fasts/end',
+      data,
+    }).then(({ data }) => {
+      if (data && data.status) {
+        toast.success(data.message);
+        setFastId('');
+        setTimerState(data.data.fastState);
+        setStartedAt(moment(data.data.startedAt));
+        setEndingAt(moment(data.data.endingAt));
+      } else {
+        toast.error(data.message);
+      }
+    });
+    setTimerState('ended');
+    setStartedAt(moment());
+    setEndingAt(moment());
+
+    // setEndingAt(())
+  };
 
   const timerInside = (
     <Timer
@@ -34,7 +104,10 @@ export default function TimerComp() {
           <div className="c-timer__btns">
             <button
               className={`c-timer__btn  ${showBtn === 'start' ? 'show' : ''}`}
-              onClick={start}
+              onClick={() => {
+                handleStartTimer();
+                start();
+              }}
             >
               Start
             </button>
@@ -53,6 +126,7 @@ export default function TimerComp() {
             <button
               className={`c-timer__btn  ${showBtn === 'stop' ? 'show' : ''}`}
               onClick={() => {
+                handleEndTimer();
                 stop();
                 reset();
               }}
@@ -74,10 +148,21 @@ export default function TimerComp() {
   return (
     <div className="c-timer card">
       <div className="c-timer__select-btn ">
-        <button>
-          16:8
-          <img src={pen} alt="pen" />
-        </button>
+        <select
+          value={goalType}
+          onChange={({ target }) => setGoalType(target.value)}
+        >
+          <option key="16:8" value="16:8">
+            16:8
+          </option>
+          <option key="18:6" value="18:6">
+            18:6
+          </option>
+          <option key="20:4" value="20:4">
+            20:4
+          </option>
+        </select>
+        <img src={pen} alt="pen" />
       </div>
       <div className="c-timer__progress">
         <CircularProgressbarWithChildren
@@ -94,17 +179,22 @@ export default function TimerComp() {
           {timerInside}
         </CircularProgressbarWithChildren>
       </div>
+
       <div className="c-timer__footer ">
         <div>
           <div className="c-timer__label">STARTED</div>
           <div className="c-timer__text">
-            {moment().format('DD MMM, HH:MM A')}
+            {timerState === 'started'
+              ? startedAt.format('DD MMM, hh:mm A')
+              : '--:--:--'}
           </div>
         </div>
         <div>
           <div className="c-timer__label">FAST ENDING</div>
           <div className="c-timer__text">
-            {moment().format('DD MMM, HH:MM A')}
+            {timerState === 'started'
+              ? endingAt.format('DD MMM, hh:mm A')
+              : '--:--:--'}
           </div>
         </div>
       </div>

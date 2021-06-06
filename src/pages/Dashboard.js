@@ -14,7 +14,7 @@ export default function Dashboard() {
         <RecentFasts />
       </div>
       <Detail />
-      <TotalFastingHours />
+      {/* <TotalFastingHours /> */}
     </div>
   );
 }
