@@ -1,24 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   CircularProgressbarWithChildren,
   buildStyles,
 } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import Timer from 'react-compound-timer';
 import pen from '../../assets/pencil.svg';
 import moment from 'moment';
 import { http } from '../../utility/http';
 import { toast } from 'react-toastify';
+import { ClockUpDown } from './CountUp';
 
 export default function TimerComp() {
-  const percentage = 12;
-  const [showBtn, setShowBtn] = useState('start');
+  // const [showBtn, setShowBtn] = useState('start');
   const [goalType, setGoalType] = useState('16:8');
   const [startedAt, setStartedAt] = useState(moment());
   const [endingAt, setEndingAt] = useState(moment());
   const [timerState, setTimerState] = useState('initial');
   const [fastId, setFastId] = useState('');
   const user = JSON.parse(localStorage.getItem('user'));
+  const [initialTime, setInitialTime] = useState(0);
+  const [timeCompleted, setTimeCompleted] = useState(0);
+
+  const percentage = (timeCompleted * 100) / parseInt(goalType.split(':')[0]);
+
+  useEffect(() => {
+    http({
+      method: 'post',
+      url: '/fasts/current',
+      data: { userId: user._id },
+    }).then(({ data }) => {
+      const currentFast = data.data;
+      if (data.status && !data.err) {
+        setGoalType(currentFast.goalType);
+        setStartedAt(moment(currentFast.startedAt));
+        setEndingAt(moment(currentFast.endingAt));
+        setTimerState(currentFast.fastState);
+        setFastId(currentFast._id);
+
+        const now = new Date();
+        const startedAt = new Date(currentFast.startedAt);
+        const diffTime = Math.floor((Math.abs(now - startedAt) * 100) / 36);
+        console.log('setInitialTime', diffTime);
+        setInitialTime(diffTime);
+      }
+    });
+  }, []);
 
   const handleStartTimer = () => {
     const fastingHours = goalType.split(':')[0];
@@ -44,6 +70,7 @@ export default function TimerComp() {
     }).then(({ data }) => {
       if (data && data.status) {
         toast.success(data.message);
+        setInitialTime(0);
         setFastId(data.fast._id);
         setTimerState(data.fast.fastState);
         setStartedAt(moment(data.fast.startedAt));
@@ -54,9 +81,10 @@ export default function TimerComp() {
     });
   };
 
-  const handleEndTimer = () => {
+  const handleEndTimer = (fastingTime) => {
     const data = {
       fastId: fastId,
+      fastingTime,
       // currentTime
     };
 
@@ -67,6 +95,8 @@ export default function TimerComp() {
     }).then(({ data }) => {
       if (data && data.status) {
         toast.success(data.message);
+        setInitialTime(0);
+
         setFastId('');
         setTimerState(data.data.fastState);
         setStartedAt(moment(data.data.startedAt));
@@ -81,76 +111,13 @@ export default function TimerComp() {
 
     // setEndingAt(())
   };
-
-  const timerInside = (
-    <Timer
-      formatValue={(v) => v.toString().padStart(2, '0')}
-      initialTime={0}
-      startImmediately={false}
-      onStart={() => setShowBtn('stop')}
-      onResume={() => console.log('onResume hook')}
-      onPause={() => console.log('onPause hook')}
-      onStop={() => setShowBtn('start')}
-      onReset={() => console.log('onReset hook')}
-    >
-      {({ start, resume, pause, stop, reset, timerState }) => (
-        <React.Fragment>
-          <div className="c-timer__label">Fasting Time</div>
-          <div className="c-timer__time">
-            <Timer.Hours />:
-            <Timer.Minutes />:
-            <Timer.Seconds />
-          </div>
-          <div className="c-timer__btns">
-            <button
-              className={`c-timer__btn  ${showBtn === 'start' ? 'show' : ''}`}
-              onClick={() => {
-                handleStartTimer();
-                start();
-              }}
-            >
-              Start
-            </button>
-            <button
-              className={`c-timer__btn  ${showBtn === 'pause' ? 'show' : ''}`}
-              onClick={pause}
-            >
-              Pause
-            </button>
-            <button
-              className={`c-timer__btn  ${showBtn === 'resume' ? 'show' : ''}`}
-              onClick={resume}
-            >
-              Resume
-            </button>
-            <button
-              className={`c-timer__btn  ${showBtn === 'stop' ? 'show' : ''}`}
-              onClick={() => {
-                handleEndTimer();
-                stop();
-                reset();
-              }}
-            >
-              End
-            </button>
-            <button
-              className={`c-timer__btn  ${showBtn === 'reset' ? 'show' : ''}`}
-              onClick={reset}
-            >
-              Reset
-            </button>
-          </div>
-        </React.Fragment>
-      )}
-    </Timer>
-  );
-
   return (
     <div className="c-timer card">
       <div className="c-timer__select-btn ">
         <select
           value={goalType}
           onChange={({ target }) => setGoalType(target.value)}
+          disabled={timerState === 'started'}
         >
           <option key="16:8" value="16:8">
             16:8
@@ -176,7 +143,14 @@ export default function TimerComp() {
             trailColor: '#242370',
           })}
         >
-          {timerInside}
+          {/* {timerInside} */}
+          <ClockUpDown
+            handleStartTimer={handleStartTimer}
+            handleEndTimer={handleEndTimer}
+            initialTime={initialTime}
+            setTimeCompleted={setTimeCompleted}
+            timerState={timerState}
+          />
         </CircularProgressbarWithChildren>
       </div>
 

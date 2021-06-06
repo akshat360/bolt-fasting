@@ -7,6 +7,7 @@ import './styles/all.scss';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-responsive-modal/styles.css';
+require('dotenv').config();
 
 function App() {
   return (

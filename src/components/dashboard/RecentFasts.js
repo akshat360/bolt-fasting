@@ -75,7 +75,6 @@ export default function RecentFasts() {
           />
 
           <XAxis
-            enableBackground={false}
             dataKey="date"
             stroke="#fff"
             fontSize={12}
@@ -104,7 +103,6 @@ export default function RecentFasts() {
             width={10}
           >
             {data.map((entry, index) => {
-              console.log('entry', entry);
               return (
                 <Cell
                   width={10}

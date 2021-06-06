@@ -1,13 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { http } from '../../utility/http';
 
 export default function Detail() {
-  const dataArr = {
+  const user = JSON.parse(localStorage.getItem('user'));
+  const [dataArr, setDataArr] = useState({
     totalFasts: '14',
     fastAvg7: '16',
     longestFast: '18.1',
     longestStreak: '14',
     currentStreak: '14',
-  };
+  });
+  const [resUser, setResUser] = useState({});
+
+  useEffect(() => {
+    http({
+      method: 'post',
+      url: '/fasts/details',
+      data: { userId: user._id },
+    }).then(({ data }) => {
+      // if (data.status && !data.err) {
+      //   // localStorage.setItem(user,  )
+      // }
+    });
+  }, []);
 
   return (
     <div className="c-detail card">
