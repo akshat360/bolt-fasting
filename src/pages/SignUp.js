@@ -1,11 +1,11 @@
 import React from 'react';
-import LoginBox from '../components/login/loginBox';
+import SignUpBox from '../components/login/signupBox';
 
-export default function Login() {
+export default function SignUp() {
   return (
     <div className="c-login-page">
       <div className="c-login-page__wrapper">
-        <LoginBox />
+        <SignUpBox />
       </div>
     </div>
   );

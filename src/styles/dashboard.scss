@@ -1,6 +1,6 @@
 .c-dashboard {
   //   background-color: blue;
-  padding: 0 12rem;
+  padding: 0 16rem;
 
   .card {
     border-radius: 25px;
@@ -14,7 +14,7 @@
     justify-content: space-between;
     .c-timer {
       background-color: #4a49be;
-      width: 30%;
+      width: 45%;
       // max-width: 40%;
       // height: 200px;
 
@@ -82,9 +82,9 @@
     .c-recent-fasts {
       height: auto;
       max-height: 300px;
-      width: 70%;
+      width: 100%;
       background-color: white;
-      max-width: 60%;
+
       &__title {
         color: #a3a3a3;
         font-size: 14px;

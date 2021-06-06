@@ -21,7 +21,7 @@ export default function RecentFasts() {
     },
     {
       date: 'Feb 10',
-      hour: '6',
+      hour: 6,
     },
     {
       date: 'Feb 11',
@@ -29,7 +29,7 @@ export default function RecentFasts() {
     },
     {
       date: 'Feb 12',
-      hour: '12',
+      hour: 12,
     },
     {
       date: 'Feb 13',
@@ -61,18 +61,39 @@ export default function RecentFasts() {
             {
               // top: 20,
               // right: 30,
-              // left: 20,
+              // left: '-5px',
               // bottom: 5,
             }
           }
         >
           {/* <CartesianGrid strokeDasharray="3 3" /> */}
-          <CartesianGrid horizontal={false} color="#A3A3A3" />
+          <CartesianGrid
+            // horizontalPoints={[6, 18]}
+            // verticalPoints={[3, 5]}
+            horizontal={false}
+            stroke="#F0F0F0"
+          />
 
-          <XAxis dataKey="date" color="#fff" fontSize={12} />
-          <YAxis unit="h" domain={[0, 16]} color="#A3A3A3" fontSize={12} />
+          <XAxis
+            enableBackground={false}
+            dataKey="date"
+            stroke="#fff"
+            fontSize={12}
+            tick={{ fill: '#A3A3A3' }}
+            markerWidth={0}
+          />
+          <YAxis
+            unit="h"
+            domain={[0, 16]}
+            stroke="#F0F0F0"
+            fontSize={12}
+            orientation={'left'}
+            tick={{ fill: '#A3A3A3' }}
+
+            // ticks={['4', '7']}
+          />
           {/* <YAxis /> */}
-          {/* <ReferenceLine y={0} stroke="#000" /> */}
+          {/* <ReferenceLine y={0} position="60" stroke="#000" /> */}
           <Tooltip />
           <Bar
             dataKey="hour"
@@ -80,13 +101,14 @@ export default function RecentFasts() {
             // shape={<TriangleBar />}
             // label={{ position: 'top' }}
             radius={[10, 10, 10, 10]}
+            width={10}
           >
             {data.map((entry, index) => {
               console.log('entry', entry);
               return (
                 <Cell
-                  cursor="pointer"
                   width={10}
+                  cursor="pointer"
                   fill={
                     entry.hour === '16'
                       ? '#5DD362'
