@@ -54,7 +54,7 @@ export default function RecentFasts({ user }) {
       <div className="c-recent-fasts__title">Recent fasts</div>
       <div className="c-recent-fasts__head">
         <div className="c-recent-fasts__head-time">
-          Average {parseFloat(data[0]?.hour.toFixed(2))}
+          Average {parseFloat(data[0]?.hour.toFixed(2) || 0)}
         </div>
         <div className="c-recent-fasts__head-dates">
           {xDomains[0]} - {xDomains[6]}

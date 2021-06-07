@@ -20,19 +20,32 @@ export default function SignupBox() {
 
   const handleSignup = (e) => {
     e.preventDefault();
-    http({
-      method: 'post',
-      url: '/auth/signup',
-      data: state,
-    }).then(({ data }) => {
-      if (data && data.status) {
-        localStorage.setItem('user', JSON.stringify(data.data));
-        toast.success(data.message);
-        history.push('/dashboard');
-      } else {
-        toast.error(data.message);
-      }
-    });
+    if (state.email.length === 0 || state.password.length === 0) {
+      toast.info('Fill the details');
+      return;
+    }
+
+    if (state.confirmPassword !== state.password) {
+      toast.info('Password should be same');
+      return;
+    }
+    try {
+      http({
+        method: 'post',
+        url: '/auth/signup',
+        data: state,
+      }).then(({ data }) => {
+        if (data && data.status) {
+          localStorage.setItem('user', JSON.stringify(data.data));
+          toast.success(data.message);
+          history.push('/dashboard');
+        } else {
+          toast.error(data.message);
+        }
+      });
+    } catch (err) {
+      toast.error('something went wrong');
+    }
   };
 
   return (
@@ -48,6 +61,7 @@ export default function SignupBox() {
           name="firstName"
           value={state.firstName}
           onChange={handleChange}
+          required
         />
       </div>
 
@@ -60,6 +74,7 @@ export default function SignupBox() {
           name="lastName"
           value={state.lastName}
           onChange={handleChange}
+          required
         />
       </div>
 
@@ -72,6 +87,7 @@ export default function SignupBox() {
           name="email"
           value={state.email}
           onChange={handleChange}
+          required
         />
       </div>
 
@@ -84,6 +100,7 @@ export default function SignupBox() {
           name="password"
           value={state.password}
           onChange={handleChange}
+          required
         />
       </div>
       <div className="form-group">
@@ -95,6 +112,7 @@ export default function SignupBox() {
           name="confirmPassword"
           value={state.confirmPassword}
           onChange={handleChange}
+          required
         />
       </div>
 

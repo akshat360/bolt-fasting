@@ -9,20 +9,30 @@ export default function LoginBox() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    http({
-      method: 'post',
-      url: '/auth/signin',
-      data: { email, password },
-    }).then(({ data }) => {
-      if (data && data.status) {
-        toast.success(data.message);
-        localStorage.setItem('user', JSON.stringify(data.data));
-        history.push('/dashboard');
-      } else {
-        toast.error(data.message);
-      }
-    });
+    if (email.length === 0 || password.length === 0) {
+      toast.info('Fill the details');
+      return;
+    }
+
+    try {
+      http({
+        method: 'post',
+        url: '/auth/signin',
+        data: { email, password },
+      }).then(({ data }) => {
+        if (data && data.status) {
+          toast.success(data.message);
+          localStorage.setItem('user', JSON.stringify(data.data));
+          history.push('/dashboard');
+        } else {
+          toast.error(data.message);
+        }
+      });
+    } catch (err) {
+      toast.error('something went wrong');
+    }
   };
+
   return (
     <form onSubmit={handleLogin}>
       <h3>Log in</h3>
@@ -33,6 +43,7 @@ export default function LoginBox() {
           className="form-control"
           placeholder="Enter email"
           value={email}
+          required
           onChange={({ target }) => setEmail(target.value)}
         />
       </div>
@@ -44,6 +55,7 @@ export default function LoginBox() {
           className="form-control"
           placeholder="Enter password"
           value={password}
+          required
           onChange={({ target }) => setPassword(target.value)}
         />
       </div>
